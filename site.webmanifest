@@ -1,0 +1,15 @@
+{
+  "name": "Indoor Track Splits",
+  "short_name": "Track Splits",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#f7f2e9",
+  "theme_color": "#c2522b",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml"
+    }
+  ]
+}
