@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Pacing Splits Calculator</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="hero">
+        <div>
+          <p class="kicker">Indoor Track Helper</p>
+          <h1>200m Split-to-Pace Calculator</h1>
+          <p class="sub">
+            Convert race goals into 200m splits and see the equivalent pace in M:SS per mile.
+          </p>
+        </div>
+      </header>
+
+      <section class="panel" aria-labelledby="goal-title">
+        <h2 id="goal-title">Goal Pace to 200m Splits</h2>
+        <div class="grid">
+          <label class="field">
+            <span>Target race distance</span>
+            <select id="distanceSelect">
+              <option value="1609.344">1 mile</option>
+              <option value="3000">3k</option>
+              <option value="5000" selected>5k</option>
+              <option value="10000">10k</option>
+              <option value="21097.5">Half marathon</option>
+              <option value="42195">Marathon</option>
+              <option value="custom">Custom</option>
+            </select>
+          </label>
+
+          <label class="field" id="customDistanceField" hidden>
+            <span>Custom distance (meters)</span>
+            <input id="customDistanceInput" type="number" min="100" step="1" placeholder="e.g. 1200" />
+          </label>
+
+          <label class="field">
+            <span>Goal time (hh:mm:ss)</span>
+            <input id="timeInput" type="text" inputmode="numeric" placeholder="e.g. 00:22:30" value="00:22:00" />
+          </label>
+
+          <div class="actions">
+            <button id="calcBtn">Calculate</button>
+            <button id="resetBtn" class="ghost">Reset</button>
+          </div>
+        </div>
+
+        <div class="results" id="goalResults" aria-live="polite"></div>
+      </section>
+
+      <section class="panel" aria-labelledby="split-title">
+        <h2 id="split-title">200m Split to Mile Pace</h2>
+        <div class="grid">
+          <label class="field">
+            <span>200m split (seconds)</span>
+            <input id="splitInput" type="number" min="20" step="0.1" placeholder="e.g. 41" />
+          </label>
+          <div class="actions">
+            <button id="splitBtn">Convert</button>
+          </div>
+        </div>
+
+        <div class="results" id="splitResults" aria-live="polite"></div>
+      </section>
+
+      <footer class="footer">
+        <p>Built for quick indoor track checks. Distances assume a standard 200m track.</p>
+      </footer>
+    </main>
+
+    <script src="app.js"></script>
+  </body>
+</html>
