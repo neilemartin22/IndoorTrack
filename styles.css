@@ -89,6 +89,11 @@ h2 {
   color: var(--accent-dark);
 }
 
+.help {
+  font-size: 0.8rem;
+  color: rgba(31, 27, 22, 0.6);
+}
+
 input,
 select {
   border: 2px solid rgba(31, 27, 22, 0.15);

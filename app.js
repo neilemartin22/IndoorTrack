@@ -2,6 +2,7 @@ const distanceSelect = document.getElementById("distanceSelect");
 const customDistanceField = document.getElementById("customDistanceField");
 const customDistanceInput = document.getElementById("customDistanceInput");
 const timeInput = document.getElementById("timeInput");
+const repSelect = document.getElementById("repSelect");
 const goalResults = document.getElementById("goalResults");
 const calcBtn = document.getElementById("calcBtn");
 const resetBtn = document.getElementById("resetBtn");
@@ -12,6 +13,19 @@ const splitResults = document.getElementById("splitResults");
 const METERS_PER_MILE = 1609.344;
 const METERS_PER_200 = 200;
 const METERS_PER_1K = 1000;
+
+const defaultTimesSeconds = (() => {
+  const fiveK = 17 * 60;
+  const threeK = (fiveK * 3000) / 5000;
+  return {
+    1609.344: 5 * 60,
+    3000: threeK,
+    5000: fiveK,
+    10000: 34 * 60,
+    21097.5: 75 * 60,
+    42195: 155 * 60,
+  };
+})();
 
 function parseTimeToSeconds(value) {
   const cleaned = value.trim();
@@ -61,9 +75,10 @@ function getDistanceMeters() {
   return Number(distanceSelect.value);
 }
 
-function renderGoalResults({ pacePerMile, pacePerKm, split200, split400 }) {
-  const split1k = split200 * 5;
-  const rows = Array.from({ length: 5 }, (_, index) => {
+function renderGoalResults({ pacePerMile, pacePerKm, split200, split400, repMeters }) {
+  const repsCount = Math.max(1, Math.round(repMeters / METERS_PER_200));
+  const repSeconds = split200 * repsCount;
+  const rows = Array.from({ length: repsCount }, (_, index) => {
     const rep = index + 1;
     return `
       <tr>
@@ -92,12 +107,12 @@ function renderGoalResults({ pacePerMile, pacePerKm, split200, split400 }) {
         <div class="value">${formatSeconds(split400)}</div>
       </div>
       <div class="card">
-        <div class="label">1k time</div>
-        <div class="value">${formatSeconds(split1k)}</div>
+        <div class="label">${repMeters}m rep time</div>
+        <div class="value">${formatSeconds(repSeconds)}</div>
       </div>
     </div>
     <div>
-      <h3>1k breakdown (200m splits)</h3>
+      <h3>${repMeters}m breakdown (200m splits)</h3>
       <table class="table">
         <thead>
           <tr>
@@ -135,6 +150,7 @@ function renderSplitResults({ split200, pacePerMile, pacePerKm }) {
 function handleCalculate() {
   const distanceMeters = getDistanceMeters();
   const totalSeconds = parseTimeToSeconds(timeInput.value);
+  const repMeters = Number(repSelect.value);
 
   if (!distanceMeters || !totalSeconds || totalSeconds <= 0) {
     goalResults.innerHTML =
@@ -148,7 +164,7 @@ function handleCalculate() {
   const split200 = secondsPerMeter * METERS_PER_200;
   const split400 = secondsPerMeter * 400;
 
-  renderGoalResults({ pacePerMile, pacePerKm, split200, split400 });
+  renderGoalResults({ pacePerMile, pacePerKm, split200, split400, repMeters });
 }
 
 function handleSplitConvert() {
@@ -166,9 +182,10 @@ function handleSplitConvert() {
 
 function handleReset() {
   distanceSelect.value = "5000";
-  timeInput.value = "00:22:00";
+  timeInput.value = formatTimeHMS(defaultTimesSeconds[5000]);
   customDistanceInput.value = "";
   customDistanceField.hidden = true;
+  repSelect.value = "1000";
   goalResults.innerHTML = "";
   splitInput.value = "";
   splitResults.innerHTML = "";
@@ -180,10 +197,19 @@ distanceSelect.addEventListener("change", () => {
   if (!isCustom) {
     customDistanceInput.value = "";
   }
+  const distanceMeters = getDistanceMeters();
+  if (distanceMeters && defaultTimesSeconds[distanceMeters]) {
+    timeInput.value = formatTimeHMS(defaultTimesSeconds[distanceMeters]);
+  }
 });
 
+repSelect.addEventListener("change", handleCalculate);
 calcBtn.addEventListener("click", handleCalculate);
 resetBtn.addEventListener("click", handleReset);
 splitBtn.addEventListener("click", handleSplitConvert);
 
+const initialDistance = getDistanceMeters();
+if (initialDistance && defaultTimesSeconds[initialDistance]) {
+  timeInput.value = formatTimeHMS(defaultTimesSeconds[initialDistance]);
+}
 handleCalculate();
